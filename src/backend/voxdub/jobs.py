@@ -1,5 +1,6 @@
 import os
 import shutil
+import tempfile
 import threading
 import uuid
 from dataclasses import replace
@@ -58,7 +59,8 @@ class Job:
 class JobManager:
     """Cola de jobs en memoria con ejecución en hilo y auditoría por etapa."""
 
-    def __init__(self, workdir: str = "/tmp/voxdub_jobs"):
+    def __init__(self, workdir: str = None):
+        workdir = workdir or os.path.join(tempfile.gettempdir(), "voxdub_jobs")
         os.makedirs(workdir, exist_ok=True)
         self.workdir = workdir
         self.jobs = {}
