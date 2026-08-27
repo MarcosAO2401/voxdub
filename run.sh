@@ -24,7 +24,7 @@ if [ ! -d .venv ]; then
 fi
 # shellcheck disable=SC1091
 source .venv/bin/activate
-pip install -q -r requirements.txt faster-whisper edge-tts yt-dlp 2>&1 | tail -2 || true
+pip install -q -r requirements.txt 2>&1 | tail -2 || true
 
 echo "==> VoxDub: levantando en http://127.0.0.1:8000 ..."
 # Abre el navegador automáticamente (best-effort).
