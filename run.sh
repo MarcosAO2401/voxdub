@@ -39,6 +39,5 @@ if [ "${VOXDUB_REAL:-0}" = "1" ]; then
 fi
 
 echo "==> VoxDub: levantando en http://127.0.0.1:8001 ..."
-# Abre el navegador automáticamente (best-effort).
-(sleep 3; (command -v xdg-open >/dev/null && xdg-open http://127.0.0.1:8001) || (command -v open >/dev/null && open http://127.0.0.1:8001)) >/dev/null 2>&1 &
+echo "==> Abre manualmente en tu navegador: http://127.0.0.1:8001"
 PYTHONPATH=src/backend python -m voxdub.cli serve --host 127.0.0.1 --port 8001
