@@ -5,6 +5,10 @@
 set -e
 cd "$(dirname "$0")"
 
+# En Termux /tmp es de solo lectura: usar un temporal escribible.
+export TMPDIR="$PWD/.tmp"
+mkdir -p "$TMPDIR"
+
 BIN="dist_backend/voxdub-backend"
 if [ -x "$BIN" ] && file "$BIN" 2>/dev/null | grep -q "executable"; then
   echo "==> VoxDub: usando binario autónomo (sin instalación)."
@@ -26,7 +30,7 @@ fi
 source .venv/bin/activate
 pip install -q -r requirements.txt 2>&1 | tail -2 || true
 
-echo "==> VoxDub: levantando en http://127.0.0.1:8000 ..."
+echo "==> VoxDub: levantando en http://127.0.0.1:8001 ..."
 # Abre el navegador automáticamente (best-effort).
-(sleep 3; (command -v xdg-open >/dev/null && xdg-open http://127.0.0.1:8000) || (command -v open >/dev/null && open http://127.0.0.1:8000)) >/dev/null 2>&1 &
-PYTHONPATH=src/backend python -m voxdub.cli serve --host 127.0.0.1 --port 8000
+(sleep 3; (command -v xdg-open >/dev/null && xdg-open http://127.0.0.1:8001) || (command -v open >/dev/null && open http://127.0.0.1:8001)) >/dev/null 2>&1 &
+PYTHONPATH=src/backend python -m voxdub.cli serve --host 127.0.0.1 --port 8001
