@@ -1,4 +1,5 @@
 import os
+import tempfile
 from .interfaces import StageResult, StageStatus
 from .transcribe import Transcriber, MockTranscriber, WhisperTranscriber
 from .detect import SpeakerDetector, MockSpeakerDetector, PyannoteDetector, validate_detection
@@ -13,7 +14,8 @@ from .interfaces import StageStatus
 class Orchestrator:
     """Ejecuta el pipeline aplicando la puerta de auditoría antes de avanzar."""
 
-    def __init__(self, workdir: str = "/tmp/voxdub_work"):
+    def __init__(self, workdir: str = None):
+        workdir = workdir or os.path.join(tempfile.gettempdir(), "voxdub_work")
         audio.ensure_dir(workdir)
         self.workdir = workdir
 
@@ -77,7 +79,7 @@ class Orchestrator:
 
     def run_phase5(self, video_path: str, use_mock: bool = True,
                    target_lang: str = "es", voice_dir: str = "voices",
-                   overrides: dict = None, out_path: str = "/tmp/voxdub_work/out.mp4"):
+                   overrides: dict = None, out_path: str = None):
         # El pipeline completo (incluye lip-sync + mux) vive en run_staged.
         segs, results = self.run_staged(
             video_path, use_mock=use_mock, target_lang=target_lang,
@@ -90,12 +92,13 @@ class Orchestrator:
                     overrides: dict = None, ai_mode: str = "mock",
                     burn_subtitles: bool = False, source_lang: str = None,
                     asr_lang: str = None, cancelled=None,
-                    out_path: str = "/tmp/voxdub_work/out.mp4") -> tuple[list, list, dict]:
+                    out_path: str = None) -> tuple[list, list, dict]:
         """Ejecuta Fase 1..6 guardando el resultado de CADA etapa (auditoría visible).
         `cancelled` es un callable que, si devuelve True, detiene el pipeline entre etapas.
         Devuelve (segmentos, resultados_por_etapa, extras) donde extras incluye subtítulos."""
         results: list = []
         extras: dict = {}
+        out_path = out_path or os.path.join(self.workdir, "out.mp4")
         segs, r = self.run_phase1(video_path, use_mock=use_mock, asr_lang=asr_lang, cancelled=cancelled)
         r.engine = "whisper" if not use_mock else "mock"
         detected = (r.metrics or {}).get("detected_languages") or []
