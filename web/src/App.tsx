@@ -65,6 +65,7 @@ export default function App() {
   );
   const [backendReady, setBackendReady] = useState(false);
   const [connecting, setConnecting] = useState(true);
+  const [realAsrAvailable, setRealAsrAvailable] = useState(true);
 
   useEffect(() => {
     let alive = true;
@@ -79,6 +80,12 @@ export default function App() {
       else if (alive) setConnecting(false);
     };
     tick();
+    // Check real ASR capability
+    if (alive) {
+      fetch(`${API}/capabilities`).then(r => r.json()).then(d => {
+        if (alive && d?.real_asr === false) setRealAsrAvailable(false);
+      }).catch(() => {});
+    }
     return () => { alive = false; };
   }, []);
   const [transcript, setTranscript] = useState<Seg[]>([]);
@@ -362,7 +369,10 @@ export default function App() {
                   IA gratuita (nube)
                 </motion.button>
                 <motion.button whileTap={{ scale: 0.96 }} onClick={() => setAimode("real")}
-                  className={`px-2 py-1 rounded-lg text-xs ${aimode === "real" ? "btn-primary text-white" : "border border-white/15 text-white/70"}`}>
+                  className={`px-2 py-1 rounded-lg text-xs ${aimode === "real" ? "btn-primary text-white" : "border border-white/15 text-white/70"}`}
+                  disabled={!realAsrAvailable}
+                  title={!realAsrAvailable ? "ASR real no disponible (faster-whisper no instalado)" : undefined}
+                >
                   Real (ASR local + nube)
                 </motion.button>
               </div>
