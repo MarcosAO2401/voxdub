@@ -18,6 +18,20 @@ app.add_middleware(
 jm = JobManager()
 
 
+@app.get("/capabilities")
+def capabilities():
+    real_asr = False
+    try:
+        import faster_whisper  # noqa: F401
+        real_asr = True
+    except Exception:
+        pass
+    return {
+        "real_asr": real_asr,
+        "version": "0.1.0",
+    }
+
+
 @app.post("/jobs")
 async def create_job(
     mock: bool = True,
