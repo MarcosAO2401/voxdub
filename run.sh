@@ -30,6 +30,14 @@ fi
 source .venv/bin/activate
 pip install -q -r requirements.txt 2>&1 | tail -2 || true
 
+# Modo REAL (ASR local con faster-whisper). En Termux requiere primero:
+#   pkg install ffmpeg clang pkg-config
+# para que 'av' (PyAV) compile. Se omite salvo que lo pidan con VOXDUB_REAL=1.
+if [ "${VOXDUB_REAL:-0}" = "1" ]; then
+  echo "==> VoxDub: modo REAL — instalando faster-whisper (compila 'av', tarda)..."
+  pip install -q faster-whisper 2>&1 | tail -3 || true
+fi
+
 echo "==> VoxDub: levantando en http://127.0.0.1:8001 ..."
 # Abre el navegador automáticamente (best-effort).
 (sleep 3; (command -v xdg-open >/dev/null && xdg-open http://127.0.0.1:8001) || (command -v open >/dev/null && open http://127.0.0.1:8001)) >/dev/null 2>&1 &
