@@ -83,12 +83,18 @@ class MockSynthesizer:
 
 
 def subprocess_silent(out_path: str, dur: float):
-    import subprocess
-    from . import audio
-    subprocess.check_call([
-        audio.resolve_bin("ffmpeg"), "-y", "-f", "lavfi", "-i", f"anullsrc=d={dur}",
-        "-t", str(dur), "-ac", "1", "-ar", "22050", out_path,
-    ])
+    """Genera WAV silencioso SIN ffmpeg (compatible Termux)."""
+    import wave
+    import struct
+    import math
+    sr = 22050
+    n_frames = int(dur * sr)
+    with wave.open(out_path, "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(sr)
+        silence = struct.pack("<h", 0) * n_frames
+        wf.writeframes(silence)
 
 
 # Voces gratuitas de Microsoft Edge TTS (sin clave, vía edge-tts). Mapeo por idioma+género.
@@ -154,9 +160,12 @@ class EdgeTTSSynthesizer:
         try:
             asyncio.run(self._synth(segments))
         except Exception as e:
+            msg = str(e)
+            if "connect" in msg.lower() or "timeout" in msg.lower() or "network" in msg.lower():
+                msg = "Sin conexión a internet: edge-tts requiere red para generar audio."
             return segments, StageResult(
                 "synthesize", StageStatus.FAILED,
-                details=f"EdgeTTS falló: {e}",
+                details=f"EdgeTTS falló: {msg}",
             )
         ok, msg = validate_synthesis(segments)
         status = StageStatus.VERIFIED if ok else StageStatus.FAILED
