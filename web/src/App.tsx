@@ -117,7 +117,7 @@ export default function App() {
     setConnError(null);
     try {
       const aiParam = aimode === "mock" ? "mock" : "free";
-      const mockParam = aimode === "real" ? "false" : "true";
+      const mockParam = aimode === "mock" ? "true" : "false";
       const qs = `mock=${mockParam}&ai=${aiParam}&target_lang=${encodeURIComponent(lang)}&voice_style=${encodeURIComponent(voice)}`
         + (srcLang ? `&source_lang=${encodeURIComponent(srcLang)}` : "")
         + (burn ? "&burn=true" : "");
