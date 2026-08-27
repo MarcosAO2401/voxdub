@@ -15,7 +15,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-jm = JobManager("/tmp/voxdub_jobs")
+jm = JobManager()
 
 
 @app.post("/jobs")
