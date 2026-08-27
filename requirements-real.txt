@@ -13,3 +13,4 @@ sentencepiece
 
 # TTS local (opcional; edge-tts es el real por defecto en modo gratuito)
 piper-tts
+faster-whisper
