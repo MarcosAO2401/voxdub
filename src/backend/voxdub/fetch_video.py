@@ -34,7 +34,7 @@ def download_video(url: str, dest: str) -> str:
             if _looks_like_platform(url):
                 raise RuntimeError(
                     f"No se pudo descargar desde la plataforma: {e}. "
-                    "Instala yt-dlp: pip install yt-dlp"
+                    "Instala yt-dlp: pip install yt-dlp (o usa un enlace directo a .mp4)"
                 )
 
     # 2) Descarga HTTP(S) directa (tamaño ilimitado; solo se controla el timeout).
