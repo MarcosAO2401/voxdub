@@ -1,0 +1,15 @@
+# Dependencias opcionales PESADAS (NO se instalan por defecto porque no tienen
+# wheel para aarch64/Termux o requieren GPU). Instala solo lo que vayas a usar:
+#   pip install -r requirements-real.txt
+# Si falta alguno, la app cae automáticamente a mock para esa etapa.
+
+# Diarización por género (gated: requiere HF_TOKEN)
+pyannote.audio
+torch
+
+# Traducción local (opcional; no es la ruta por defecto)
+transformers
+sentencepiece
+
+# TTS local (opcional; edge-tts es el real por defecto en modo gratuito)
+piper-tts
