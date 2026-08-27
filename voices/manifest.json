@@ -1,0 +1,8 @@
+{
+  "voices": {
+    "female": "es_ES-carlfm-low",
+    "male": "es_ES-<modelo-masculino>",
+    "unknown": "es_ES-carlfm-low"
+  },
+  "note": "Cada clave apunta al nombre base de un modelo .onnx en esta carpeta (p.ej. es_ES-carlfm-low.onnx). Descarga voces reales con: python scripts/fetch_voice.py --name es_ES-carlfm-low --url <URL> --sha256 <hash>. El usuario puede agregar su propia voz y hacer override por hablante. Fuente de voces: https://github.com/rhasspy/piper (modelos .onnx)."
+}
