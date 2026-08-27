@@ -1,0 +1,30 @@
+# Dependencias reales (instalar en tu máquina de desarrollo, no en sandbox compartido).
+# Se recomienda un venv con Python 3.10/3.11 y, para velocidad, GPU opcional.
+# Cada versión debe fijarse (pin) para reproducibilidad y seguridad de supply-chain.
+
+# Fase 1 - ASR (faster-whisper es el adaptador real usado; ctranslate2, int8)
+faster-whisper
+
+# Fase 1 - Traducción/TTS en la nube (modo gratuito, sin clave) y descarga de URLs
+edge-tts
+yt-dlp
+
+# Fase 2 - Diarización + género (gated: requiere HF_TOKEN)
+pyannote.audio
+torch
+
+# Fase 3 - Traducción local (opcional; no es la ruta por defecto)
+transformers
+sentencepiece
+
+# Fase 4 - TTS local (opcional; edge-tts es el real por defecto en modo gratuito)
+piper-tts
+
+# Fase 5 - Mux / lip-sync (opcional)
+imageio-ffmpeg
+
+# Backend / servicio
+fastapi
+uvicorn
+
+# Nota de seguridad: verifica los hashes de los modelos de voz con scripts/fetch_voice.py.
