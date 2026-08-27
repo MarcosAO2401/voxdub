@@ -1,5 +1,4 @@
 # Dependencias base (se instalan siempre; tienen wheels para aarch64/Linux y Termux).
-# Modo mock + modo gratuito (nube) + ASR real (faster-whisper) funcionan con estas.
 
 # Backend / servicio
 fastapi
@@ -8,8 +7,6 @@ python-multipart
 requests
 pydub
 
-# Fase 1 - ASR real local (ctranslate2 / faster-whisper, int8)
-faster-whisper
 
 # Fase 1 - Traducción/TTS en la nube (modo gratuito, sin clave) y descarga de URLs
 edge-tts
