@@ -66,6 +66,7 @@ export default function App() {
   const [backendReady, setBackendReady] = useState(false);
   const [connecting, setConnecting] = useState(true);
   const [realAsrAvailable, setRealAsrAvailable] = useState(true);
+  const [lastJobId, setLastJobId] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -135,6 +136,7 @@ export default function App() {
         return;
       }
       const data = await res.json();
+      setLastJobId(data.job_id);
       setJob({ id: data.job_id, status: "queued", stages: [], output: null, error: null });
       poll(data.job_id);
     } catch (e) {
@@ -144,6 +146,7 @@ export default function App() {
   }
 
   async function poll(id: string) {
+    setLastJobId(id);
     for (let i = 0; i < 240; i++) {
       try {
         const r = await fetch(`${API}/jobs/${id}`);
@@ -168,6 +171,14 @@ export default function App() {
       await new Promise((r) => setTimeout(r, 1000));
     }
     setBusy(false);
+  }
+
+  function retryPoll() {
+    if (lastJobId) {
+      setConnError(null);
+      setBusy(true);
+      poll(lastJobId);
+    }
   }
 
   async function applyTranslation() {
@@ -231,9 +242,12 @@ export default function App() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="bg-red-900/50 text-red-200 text-sm px-4 py-2 border-b border-red-700/50"
+              className="bg-red-900/50 text-red-200 text-sm px-4 py-2 border-b border-red-700/50 flex items-center justify-between"
             >
               {connError}
+              {lastJobId && (
+                <button onClick={retryPoll} className="ml-3 px-2 py-1 rounded border border-red-400/50 text-xs hover:bg-red-500/20">Reintentar</button>
+              )}
             </motion.div>
           )}
           {failed && job?.error && (
@@ -380,7 +394,7 @@ export default function App() {
                 {aimode === "real"
                   ? "ASR real con Whisper local (detecta el idioma hablado). Traduce y habla con IA gratuita en la nube (MyMemory + edge-tts). Requiere descargar el modelo Whisper la 1ª vez."
                   : aimode === "free"
-                  ? "Traducción MyMemory + voz edge-tts (ambas gratuitas, sin clave)."
+                  ? "Traducción MyMemory + voz edge-tts (ambas gratuitas, sin clave). Requiere internet."
                   : "Todo simulado offline (texto y audio de ejemplo)."}
               </p>
             </div>
