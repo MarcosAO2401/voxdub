@@ -20,7 +20,7 @@ function statusColor(s: string) {
   return "text-white/50";
 }
 
-const API = "http://127.0.0.1:8000";
+const API = (typeof window !== "undefined" && window.location?.origin) || "";
 const LANG_NAMES: Record<string, string> = {
   es: "Español", en: "Inglés", fr: "Francés", de: "Alemán", it: "Italiano",
   pt: "Portugués", ru: "Ruso", ja: "Japonés", zh: "Chino", ko: "Coreano", ar: "Árabe",
